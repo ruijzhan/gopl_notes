@@ -54,10 +54,17 @@ for _, arg := range os.Args[1:] {
 - 以下几种变量声明是等价的。实践中应使用前两种形式，
 
 ```go
-s := ""              // 通常在函数内部使用，不适合包级别的变量。显示的初始化说明初始值的重要性
-var s string         // 说明初始化值不重要
-var s = ""           // 很少用，除非声明多个变量
-var s string = ""    // 在类型不一致时是必须的
+// 通常在函数内部使用，不适合包级别的变量。显示的初始化说明初始值的重要性
+s := ""              
+
+// 表明初始化值不重要
+var s string         
+
+// 很少用，除非声明多个变量
+var s = ""           
+
+// 在类型不一致时是必须的
+var s string = ""    
 ```
 
 ```go
@@ -109,11 +116,14 @@ for key, val := range mmap {
 - 通道：
 
 ```go
-ch := make(chan string)  // 创建通道
+// 创建通道
+ch := make(chan string)  
 
-ch <- expression         // 向通道发送值
+// 向通道发送值
+ch <- expression         
 
-<- ch                    // 从通道接收值
+// 从通道接收值
+<- ch                    
 ```
 
 ## 1.7 一个Web服务器
@@ -125,7 +135,8 @@ ch <- expression         // 向通道发送值
 - switch 语句：
 
 ```go
-switch expression {  // 可以包含：一个短变量声明，递增或赋值语句，或者函数调用。
+// switch 语句可以包含：一个短变量声明，递增或赋值语句，或者函数调用。
+switch expression {  
     case match1:
         // ...
     case match2:
@@ -134,7 +145,8 @@ switch expression {  // 可以包含：一个短变量声明，递增或赋值�
         // ...
 }
 
-switch {    //等价于 switch true
+//等价于 switch true
+switch {    
     case x > 0:
     // ...
 }
