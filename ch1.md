@@ -26,7 +26,6 @@
 
 - for 是 Go 里面的 **唯一** 循环语句
 
-
 ```go
 for init; condition; post {
     // ...
@@ -55,20 +54,20 @@ for _, arg := range os.Args[1:] {
 
 ```go
 // 通常在函数内部使用，不适合包级别的变量。显示的初始化说明初始值的重要性
-s := ""              
+s := ""
 
 // 表明初始化值不重要
-var s string         
+var s string
 
 // 很少用，除非声明多个变量
-var s = ""           
+var s = ""
 
 // 在类型不一致时是必须的
-var s string = ""    
+var s string = ""
 ```
 
 ```go
-fmt.Println(strings.Join(os.Args[1:], " ")) 
+fmt.Println(strings.Join(os.Args[1:], " "))
 
 // 不关心格式
 fmt.Println(os.Args[1:])
@@ -120,10 +119,10 @@ for key, val := range mmap {
 ch := make(chan string)  
 
 // 向通道发送值
-ch <- expression         
+ch <- expression
 
 // 从通道接收值
-<- ch                    
+<- ch
 ```
 
 ## 1.7 一个Web服务器
@@ -146,7 +145,7 @@ switch expression {
 }
 
 //等价于 switch true
-switch {    
+switch {
     case x > 0:
     // ...
 }
