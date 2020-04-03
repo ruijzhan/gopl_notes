@@ -26,64 +26,64 @@
 
 - for 是 Go 里面的 **唯一** 循环语句
 
-```go
-for init; condition; post {
-    // ...
-}
+    ```go
+    for init; condition; post {
+        // ...
+    }
 
-// 传统的 while 循环
-for condition {
-    // ...
-}
+    // 传统的 while 循环
+    for condition {
+        // ...
+    }
 
-// 传统的无限循环
-for {
-    // ...
-}
-```
+    // 传统的无限循环
+    for {
+        // ...
+    }
+    ```
 
 - 用 **range** 每次迭代 slice 产生索引和元素，不需要的变量可以赋值给 _
 
-```go
-for _, arg := range os.Args[1:] {
-    // ...
-}
-```
+    ```go
+    for _, arg := range os.Args[1:] {
+        // ...
+    }
+    ```
 
 - 以下几种变量声明是等价的。实践中应使用前两种形式，
 
-```go
-// 通常在函数内部使用，不适合包级别的变量。显示的初始化说明初始值的重要性
-s := ""
+    ```go
+    // 通常在函数内部使用，不适合包级别的变量。显示的初始化说明初始值的重要性
+    s := ""
 
-// 表明初始化值不重要
-var s string
+    // 表明初始化值不重要
+    var s string
 
-// 很少用，除非声明多个变量
-var s = ""
+    // 很少用，除非声明多个变量
+    var s = ""
 
-// 在类型不一致时是必须的
-var s string = ""
-```
+    // 在类型不一致时是必须的
+    var s string = ""
+    ```
 
-```go
-fmt.Println(strings.Join(os.Args[1:], " "))
+    ```go
+    fmt.Println(strings.Join(os.Args[1:], " "))
 
-// 不关心格式
-fmt.Println(os.Args[1:])
-```
+    // 不关心格式
+    fmt.Println(os.Args[1:])
+    ```
 
 ## 1.3 找出重复行
 
 - 用 make 创建 map 数据结构的 **引用**。用 range 迭代 map，key 的顺序不固定
 
-```go
-mmap := make(map[int]string)
-// ...
-for key, val := range mmap {
+    ```go
+    mmap := make(map[int]string)
     // ...
-}
-```
+    for key, val := range mmap {
+        // ...
+    }
+    ```
 
 - fmt.Printf 函数常用的 **转义字符** (verb):
 
@@ -114,16 +114,16 @@ for key, val := range mmap {
 
 - 通道：
 
-```go
-// 创建通道
-ch := make(chan string)  
+    ```go
+    // 创建通道
+    ch := make(chan string)  
 
-// 向通道发送值
-ch <- expression
+    // 向通道发送值
+    ch <- expression
 
-// 从通道接收值
-<- ch
-```
+    // 从通道接收值
+    <- ch
+    ```
 
 ## 1.7 一个Web服务器
 
@@ -133,22 +133,22 @@ ch <- expression
 
 - switch 语句：
 
-```go
-// switch 语句可以包含：一个短变量声明，递增或赋值语句，或者函数调用。
-switch expression {  
-    case match1:
+    ```go
+    // switch 语句可以包含：一个短变量声明，递增或赋值语句，或者函数调用。
+    switch expression {  
+        case match1:
+            // ...
+        case match2:
+            // ...
+        default:
+            // ...
+    }
+    
+    //等价于 switch true
+    switch {
+        case x > 0:
         // ...
-    case match2:
-        // ...
-    default:
-        // ...
-}
-
-//等价于 switch true
-switch {
-    case x > 0:
-    // ...
-}
-```
+    }
+    ```
 
 - 用标签化语句让 break 和 continue 跳出多层嵌套循环

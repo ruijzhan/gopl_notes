@@ -62,14 +62,24 @@ s := [...]{99: -1}
 
 - make 可以创建一个具有指定元素类型，长度和容量的 slice。
 
-```go
-make([]T, len)
-make([]T, len, cap)  //等同于 make([]T, cap)[:len]
-```
+    ```go
+    make([]T, len)
+    make([]T, len, cap)  //等同于 make([]T, cap)[:len]
+    ```
 
 ### 4.2.1 append 函数
 
+- 必须将 append 的调用结果再次赋值给传入 append 函数的 slice。
+
+    ```go
+    runes = append(runes, r)
+    ```
+
+- 任何可能改变 slice 的长度或者容量，或者使 slice 指向不同的底层数组，都需要更新 slice 变量。
+
 ### 4.2.2 slice 就地修改
+
+- 使用内置的 copy 函数在两个 slice 之间拷贝元素
 
 ## 4.3 map
 

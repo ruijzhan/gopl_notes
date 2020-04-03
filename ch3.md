@@ -86,10 +86,10 @@
 
 - 底层类型为基本类型（数字，布尔，字符串）的具名类型，也可以用于声明常量。例如：
 
-```go
-const noDelay time.Duration = 0
-const timeout = 5 * time.Second
-```
+    ```go
+    const noDelay time.Duration = 0
+    const timeout = 5 * time.Second
+    ```
 
 ### 3.6.1 常量生成器 iota
 

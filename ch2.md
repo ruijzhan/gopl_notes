@@ -62,17 +62,17 @@ var b, f, s = true, 2.3, "four"
 
 - 只有对可读性有帮助时才使用多个表达式初始化变量，例如 for 循环的初始化：
 
-```go
-for i, j := 0, 0; //...
-```
+  ```go
+  for i, j := 0, 0; //...
+  ```
 
 - 在多个左值的声明中，短变量声明至少声明一个新变量：
 
-```go
-in, err := os.Open(infile)
-// out为新变量
-out, err := os.Create(outfile)
-```
+  ```go
+  in, err := os.Open(infile)
+  // out为新变量
+  out, err := os.Create(outfile)
+  ```
 
 - 只有在同一个词法块中变量已经存在的情况下，短声明行为才和赋值一样。外层的声明将被忽略。
 
@@ -82,14 +82,14 @@ out, err := os.Create(outfile)
 
 - 函数返回局部变量的值的指针是安全的
 
-```go
-var p = f()
+  ```go
+  var p = f()
 
-func f() *int {
-    v := 1
-    return &v
-}
-```
+  func f() *int {
+      v := 1
+      return &v
+  }
+  ```
 
 - 指针产生别名。**复制**其他**引用类型**也产生别名。
 
@@ -101,16 +101,16 @@ func f() *int {
   - 初始化为 T 类型的零值
   - 返回其地址 （ 类型为 *T ）
 
-```go
-func newInt() *int {
-    return new(int)
-}
-// 等同于
-func newInt() *int {
-    var i int
-    return &i
-}
-```
+  ```go
+  func newInt() *int {
+      return new(int)
+  }
+  // 等同于
+  func newInt() *int {
+      var i int
+      return &i
+  }
+  ```
 
 - 如果两个变量的类型不携带任何信息且都是零值，它们就具有相同的地址。例如类型为 struct{} 或 [0]int
 
@@ -122,15 +122,15 @@ func newInt() *int {
 
 - 变量的逃逸
 
-```go
-var g *int
+  ```go
+  var g *int
 
-func f() {
-    var x int
-    x = 1
-    g = &x   // 变量x从f逃逸
-}
-```
+  func f() {
+      var x int
+      x = 1
+      g = &x   // 变量x从f逃逸
+  }
+  ```
 
 - 合理控制变量的声明周期，提高垃圾回收效率
 
@@ -148,11 +148,11 @@ func f() {
 
 - 同时返回操作结果：
 
-```go
-v, ok = mmap[key]
-v, ok = x.(T)
-v, ok = <-ch
-```
+  ```go
+  v, ok = mmap[key]
+  v, ok = x.(T)
+  v, ok = <-ch
+  ```
 
 ### 2.4.2 可赋值性
 
@@ -168,9 +168,9 @@ v, ok = <-ch
 
 - type 声明（通常在包级别）定义一个新的类型，和某个已有类型使用同样的**底层类型**
 
-```go
-type name underlyingType
-```
+  ```go
+  type name underlyingType
+  ```
 
 - 不同类型间可以相互转换的条件：
 
@@ -202,9 +202,9 @@ type name underlyingType
 
 - 任何文件可以包含任意数量的 init 函数声明：
 
-```go
-func init() { /* ... */ }
-```
+  ```go
+  func init() { /* ... */ }
+  ```
 
 - init 函数不能被调用。程序启动时，init 函数按照**声明的顺序**执行
 
@@ -226,15 +226,15 @@ func init() { /* ... */ }
 
 - 内层词法块中的声明可能屏蔽全局变量，避免使用 :=
 
-```go
-var cwd strings
-func init() {
-    cwd, err := os.Getwd() // 错误
-}
-
-// 应该
-func init() {
-    var err error
-    cwd, err = os.Getwd()
-}
-```
+  ```go
+  var cwd strings
+  func init() {
+      cwd, err := os.Getwd() // 错误
+  }
+  
+  // 应该
+  func init() {
+      var err error
+      cwd, err = os.Getwd()
+  }
+  ```
