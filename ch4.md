@@ -16,8 +16,8 @@ s := [...]{99: -1}
 
     ```go
     func zero(ptr *[32]byte) {
-        for i := range prt {
-            ptr[i] = 0
+        for idx := range prt {    //for 获取 index
+            ptr[idx] = 0
         }
     }
     //或者
@@ -48,6 +48,13 @@ s := [...]{99: -1}
     a := [...]{1, 2, 3, 4, 5}
     reverse(a[:])     //转换为 slice ！！！
     fmt.Println(a)    // [5, 4, 3, 2, 1]
+    ```
+
+- 用 for range 循环遍历数组或者 slice：
+
+    ```go
+    for i := range sslice { /*只获取index*/}
+    for i, e := range sslice { /* 获取index和元素 */}
     ```
 
 - slice 的元素是非直接的，所以 slice **无法** 直接做比较，需要自己写函数来做比较。唯一运行 == 的操作是与 nil 比较。
@@ -82,6 +89,50 @@ s := [...]{99: -1}
 - 使用内置的 copy 函数在两个 slice 之间拷贝元素
 
 ## 4.3 map
+
+- 键的类型 K 必须是可以通过操作符 == 来比较的。但最好不要用浮点数
+
+    ```go
+    //空map
+    ages := make(map[string]int)
+    ages := map[string]int{}
+
+    //字面量初始化
+    ages := map[string]int{"foo": 21, "bar": 22}
+
+    //用内置 delete 函数删除元素：
+    delete(ages, "foo")
+    ```
+
+- 可以使用辅助函数把 slice 等不可直接比较的类型转换为 string，作为 map 的 key。间接实现不可比较作为 key 的功能
+
+- map元素不是一个变量，不可以获取它的地址
+
+- 使用 for range 循环遍历 map, 但元素顺序**不固定**。需显式给先给key排序再获取元素。
+
+    ```go
+    for key, value := range mmap { /*...*/ }
+    // 或者
+    for key := range mmap { /*...*/ }
+    ```
+
+- map类型的零值是nil，从零值map查找，删除元素，获取len，range循环和空map行为一致。但设置元素前，**必须初始化**
+
+    ```go
+    var ages map[string]int    //nil
+    ```
+
+- 通过下标访问map总是会有值，如果key不存在则返回值类型的空值。所以的第二个返回值来判断元素在不在map中：
+
+    ```go
+    if age, ok := ages["bob"]; !ok { /* 键 bob 不存在 */}
+    ```
+
+- map 类型之间不能比较, 但可以和nil比较。只能自己写函数遍历比较两个map, 注意区分“元素不存在”和“元素存在但值为零”的情况
+
+- 可以用 map 实现 set 的部分功能。
+
+- map 的值可以是任何类型。值可以再使用map类型实现延迟初始化
 
 ## 4.4 结构体
 
