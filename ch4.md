@@ -181,4 +181,32 @@ s := [...]{99: -1}
 
 ## 4.5 JSON
 
+- JSON 的数组用来编码 Go 里面的数组和 slice。JSON 的对象用来编码Go里面的 map 和结构体
+
+- 用 json.Marshal 把 Go 的数据结构转换为 JSON，返回类型是 []byte
+
+    ```go
+    date, err := json.Marshal(movies)
+    ```
+
+- 只有可导出的成员可以转换为 JSON 字段
+
+- 通过**成员**标签定义成员在 JSON 中的名字，以及omitempty等
+
+    ```go
+    Year int `json:"release"`
+    Color bool `json:"color,omitempty"`
+    ```
+
+- 用 json.Unmarshal 将 JSON 字符串解码为Go数据结构
+
+    ```go
+    var titles []struct{Title string}
+    err := json.Unmarshal(data, &titles)  //传入结构体slice的指针，填充Title字段，其他字段丢弃
+    ```
+
+- JSON 字段的名称关联 Go 结构体成员的名称是忽略大小写的，需要在JSON中有下划线而Go里面没有下划线的时候使用成员标签定义。 （85页例子）
+
 ## 4.6 文本和 HTML 模板
+
+- 查 text/template 和 html/template 的文档
