@@ -35,12 +35,12 @@ Go中的接口类型是隐式实现。对于一个具体的类型，无须声明
 
 - 表达式实现了一个接口时，表达式才能赋值给接口
 
-```go
-var w io.Writer
-w = os.Stdout
-w = new(bytes.Buffer)
-w = time.Second  // 错误
-```
+  ```go
+  var w io.Writer
+  w = os.Stdout
+  w = new(bytes.Buffer)
+  w = time.Second  // 错误
+  ```
 
 - 注意调用方法时的接收者变量指针隐式转换的语法糖，把变量赋值给接口值时无效。
 
@@ -68,10 +68,10 @@ w = time.Second  // 错误
 
 - 但比较两个接口时，如果动态值是不可比较的，例如 slice，会导致宕机
 
-```go
-var x interface{} = []int{1,2,3}
-x == x  // 宕机
-```
+  ```go
+  var x interface{} = []int{1,2,3}
+  x == x  // 宕机
+  ```
 
 - 用 fmt 包的 %T 来获取接口的动态类型
 
@@ -87,15 +87,15 @@ x == x  // 宕机
 
 - 要让一个类型可以被 sort.Sort() 排序，需要实现sort.Interface接口：
 
-```go
-package sort
-
-type Interface interface {
-    Len() int
-    Less(i, j int) bool
-    Swap(i, j int)
-}
-```
+  ```go
+  package sort
+  
+  type Interface interface {
+      Len() int
+      Less(i, j int) bool
+      Swap(i, j int)
+  }
+  ```
 
 - 用 sort.Strings(s []sting) 排序字符串 slice
 
@@ -137,14 +137,76 @@ func (e *errorString) Error() string {return e.text}
 
 ## 7.9 示例：表达式求值器
 
+- P154（比较无聊，省略）
+
 ## 7.10 类型断言
+
+- 类型断言用来从它的操作数 x 中把具体类型 T 的值提取出来，写作: x.(T)。如果成功，返回 T 类型的值。类型断言失败时导致宕机
+
+- 如果类型断言中的 T 是一个接口类型，那么检查的是 x 的动态值是否满足T。如果成功，返回的是T类型的接口值，但保留了其中的动态类型和值。所以 x 不能是空接口值。
+
+- 很少从一个接口值向要求更宽松（方法更少）的类型做类型断言。
+
+- 在两个结果的类型断言赋值表达式中，第二个 bool 类型返回值只是断言是否成功：
+
+  ```go
+  if w, ok : w.(io.Writer); ok {
+      // use w
+  }
+  ```
 
 ## 7.11 使用类型断言来识别错误
 
+- 不要通过匹配字符串来判断实例
+
+- 定义新结构体和其中的字段描述错误信息，再用指针接收者实现 error 接口。
+
+- 获得 err 后用类型断言判断错误类型。
+
+- 但如果特殊类型 err 被 fmt.Errorf 合并到一个大字符串中，结构信息就会丢失。所以错误识别通常在失败操作是马上处理，而不是返回给调用者。
+
 ## 7.12 通过接口类型断言来查询特性
+
+- 声明一个局部 interface 类型 T，包含想要查询操作数 x 是否支持的方法。
+
+- 用类型断言 if sw, ok := x.(T); ok { //调用所支持的方法 }
+
+- 如果不 ok，则调用默认方法
 
 ## 7.13 类型分支
 
+- 表面上 x 的类型是 interface{}，实际上是类型分支中类型的**联合识别**
+
+  ```go
+  func f(x interface {}) string{
+      switch x:=x.(type) {   // 新声明的 x 不与外层词法块的 x 冲突
+          case nil:
+              return "NULL"
+          case int, uint:
+              return fmt.Sprintf("%d", x)
+          case bool:
+              if x {
+                  return "TRUE"
+              }
+              return "FALSE"
+          case string:
+              return x
+          default:
+              panic(/*...*/)
+      }
+  }
+  ```
+
 ## 7.14 示例：基于标记的XML解析
 
+- 跟类型分支差不多。见P166
+
 ## 7.15 一些建议
+
+- 不需要先设计接口再实现满足接口的类型。应先实现各种类型，在用接口抽象它们的行为。
+
+- 如果接口和类型实现出于依赖的原因不能放在同一个包内，也可以用一个接口可以一个实现来解耦两个包
+
+- 设计方法较少容易满足的小接口
+
+- 不是所有的东西都一定是对象，全局函数，不完全封装的数据类型都应该有其位置
