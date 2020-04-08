@@ -113,7 +113,10 @@ if f != nil {
       dir := dir  //为每次循环声明新的内部变量
       rmdirs = append(rmdirs, func() { os.RemoveAll(dir) })
   }
+
   ```
+
+  - 在循环内调用匿名函数时，使用**显式参数**将迭代变量传给函数，以复制变量的副本
 
 ## 5.7 变长函数
 

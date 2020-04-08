@@ -147,11 +147,84 @@ func squarer(out chan<- int, in <-chan int) {
 
     - 循环外开一个 gorouting 等待所有gorouting完成：wg.Wait()，然后关闭通道。
 
-    - main gorouting 用range读取通道直到其关闭退出
+    - main gorouting 用 range 读取通道直到其关闭退出
 
 ## 8.6 示例：并发的 Web 爬虫
 
+- 为了限制并行数量，避免耗尽资源，可以：
+
+  - 使用容量为 n 的缓冲通道作为令牌桶：
+
+    ```go
+    var tokens = make(chan struct{}, 20)
+
+    func crawl(url string) {
+      tokens <- struct{}{}  //获取令牌
+      // 操作
+      <- tokens  //释放令牌
+    }
+    ```
+
+  - 只创建 n 个工作 gorouting，并在主 gorouting 上处理输出，分发任务。主 gorouting 从结果通道读取worker的输出，从任务通道写入任务。
+
 ## 8.7 使用select多路复用
+
+- select 语句有一系列的情况也可选的默认分支。一个情况制定一次通信（在一个通道上发送或接收）和关联的一段代码。
+
+  ```go
+  select {
+    case <-ch1:
+      // ...
+    case x := <-ch2:
+      // ...
+    case ch3 <- y:
+      // ...
+    default:
+      // 可以用于非阻塞通信
+  }
+  ```
+
+- 如果有多个情况同时满足，select **随机**选择一个
+
+- 如果没有条件满足，select{} 将永远等待，可以读取定时器通道保护 select：
+
+  ```go
+
+  select {
+    case <-time.After(10 * time.Second):
+       //
+  }
+  ```
+
+- time.Tick 和 time.NewTicker
+
+  ```go
+    tick := time.Tick(1 * time.Second)  // 每秒钟可以读取一次，在应用的整个生命周期中都需要才合适。
+    for {
+      select {
+        case <-tick:  //如果其他情况不满足，for 每秒钟循环一次
+        case //...
+      }
+    }
+  
+  
+    ticker := time.NewTicker(1 * time.Second)
+    <- ticker.C
+    ticker.Stop()  //造成 ticker 的 gorouting 终止
+  ```
+
+- 非阻塞通信：
+
+  ```go
+  select {
+    case <-abort:
+      return
+    default:
+      //不执行操作，如果abort不可读，select会立即退出
+  }
+  ```
+
+- 在 nil 通道上发送或接收将永远阻塞。在select 语句中的情况，如果通道是 nil 将永远不会被选择。可以用 nil 来开启或禁用对应的情况
 
 ## 8.8 示例：并发目录遍历
 
