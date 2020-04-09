@@ -1,6 +1,6 @@
 # 第八章 gorouting和通道
 
-- Go 有两种并发编程的风格：基于通道的 Communication Sequence Process 模式和共享内存的多线程模式 
+- Go 有两种并发编程的风格：基于通道的 Communication Sequence Process 模式和共享内存的多线程模式
 
 ## 8.1 gorouting
 
@@ -111,17 +111,17 @@ io.Copy(os.Stdout, conn)
 
 - Go的类型系统提供了单向通道类型：
 
-```go
-chan<- int  //只能发送
-<-chan int  //只能接收
-
-func squarer(out chan<- int, in <-chan int) {
-  for v := range in{
-    out <- x*x
+  ```go
+  chan<- int  //只能发送
+  <-chan int  //只能接收
+  
+  func squarer(out chan<- int, in <-chan int) {
+    for v := range in{
+      out <- x*x
+    }
+    close(out)    //发送方才有义务关闭通道。关闭只读通道编译会报错
   }
-  close(out)    //发送方才有义务关闭通道。关闭只读通道编译会报错
-}
-```
+  ```
 
 - 可以将双向通道转换为单向通道，反过来不行
 
@@ -228,6 +228,59 @@ func squarer(out chan<- int, in <-chan int) {
 
 ## 8.8 示例：并发目录遍历
 
+```go
+  var tick <-chan time.Time  //值是 nil
+  if *verbose {
+    tick = time.Tick(500 * time.Millisecond)
+  }
+  var nfiles, nbytes int64
+loop:
+  for {
+    select {
+    case size, ok := <-fileSizes: //使用了for循环迭代读取通道，所以不用range
+      if !ok {
+        break loop // fileSizes was closed
+      }
+      nfiles++
+      nbytes += size
+    case <-tick:  //如果没有被初始化，功能被关闭
+      printDiskUsage(nfiles, nbytes)
+    }
+  }
+```
+
 ## 8.9 取消
 
+- 通过关闭一个无缓冲通道，使得其他 gorouting 读取操作不再阻塞，从而建立广播机制：
+
+  ```go
+  var done = make(chan struct{})
+  
+  func cancelled() bool {
+    select {
+      case <- done:
+        return true
+      default:
+        return false
+    }
+  }
+  ```
+
+- 在 gorouting 中，if cancelled（） 则直接return
+
 ## 8.10 示例：聊天服务器
+
+- 可以创建通道的通道。从通道中读取代表客户端的通道，进行消息发送
+
+```go
+type client chan<- string
+var (
+  entering = make(chan client)
+  // ...
+)
+
+- 开一个负责广播的 gorouting，读取客户端消息，然后写入所有客户端通道。读取entering通道，把新客户端加入列表。读取leaving消息，把客户端移除列表
+
+- 算了，剩下的自己去看 P198 的例子
+
+```
