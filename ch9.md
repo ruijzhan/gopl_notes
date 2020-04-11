@@ -53,16 +53,44 @@ func Balance() int {
 
 ## 9.5 延迟初始化：sync.Once
 
+```go
+func loadIcons() {
+    //...
+}
+
+var loadIconsOnce sync.Once
+var icons map[string]image.Image
+
+func Icon(name string) image.Image {
+    loadIconsOnce.Do(loadIcons)
+    return icons[name]
+}
+```
+
+- Once 包含一个布尔变量和互斥量。布尔变量记录是否初始化完成，互斥量保护初始化代码。Do函数接收初始化函数变量做参数。
+
 ## 9.6 竞态检测器
 
+- 把 -race 命令行参数加到 go build, run, test 命令里启动该功能
+
 ## 9.7 示例：并发非阻塞缓存
+
+- 在保存结果的结构体中嵌入一个通道。通过关闭通道来广播结果值准备好的事件。
 
 ## 9.8 gorouting 与线程
 
 ### 9.8.1 可增长的栈
 
+- Go 中的栈大小不固定，可以根据需求正大和缩小。
+
 ### 9.8.2 gorouting 调度
 
+- Go 调度器不需要切换到内核语境，所以调度 gorouting 比线程成本低
+
 ### 9.8.3 GOMAXPROCS
+
+- Go 调度器使用 GOMAXPROCS 参数切断使用多少个OS线程同时执行 Go 代码。默认是机器上的 CPU 核数
+
+- 可以设置 GOMAXPROCS 环境变量或者 runtime.GOMAXPROCS 来控制这个参数
 
 ### 9.8.4 gorouting 没有标识
