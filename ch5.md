@@ -40,11 +40,11 @@ func visit(links []string, n *html.Node) []string {
 
 - 第一种策略：将错误传递下去。可以新建一个 err，加入其它错误信息和老的 err 再 return。函数 f(x) 只负责报告函数 f 的行为和 x 的值。错误消息可能串联，避免首字母大写和换行。
 
-```go
-if err != nil {
-    return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
-}
-```
+  ```go
+  if err != nil {
+      return nil, fmt.Errorf("parsing %s as HTML: %v", url, err)
+  }
+  ```
 
 - 第二种：出现不固定或者不可预测的错误时，短暂的间隔后重试，超出重试次数后再返回错误。
 
@@ -78,14 +78,14 @@ for {
 
 - 函数类型的零值是nil，调用一个空的函数变量会宕机。函数变量本身不可比较，但可以和空值比较。
 
-```go
-var f func(int) int
-f(1)  // panic
-
-if f != nil {
-    f(1)
-}
-```
+  ```go
+  var f func(int) int
+  f(1)  // panic
+  
+  if f != nil {
+      f(1)
+  }
+  ```
 
 - 使用函数变量，可以在代码中将具体操作从代码执行逻辑中分开。不同的操作重用代码执行逻辑。
 
@@ -108,13 +108,13 @@ if f != nil {
 
   - 在循环里创建的所有**函数变量**共享相同的 for 循环声明的变量，需要引入**内部变量**解决：
 
-  ```go
-  for _, dir := range tempDirs() {
-      dir := dir  //为每次循环声明新的内部变量
-      rmdirs = append(rmdirs, func() { os.RemoveAll(dir) })
-  }
-
-  ```
+    ```go
+    for _, dir := range tempDirs() {
+        dir := dir  //为每次循环声明新的内部变量
+        rmdirs = append(rmdirs, func() { os.RemoveAll(dir) })
+    }
+  
+    ```
 
   - 在循环内调用匿名函数时，使用**显式参数**将迭代变量传给函数，以复制变量的副本
 
